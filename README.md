@@ -5,7 +5,14 @@ A document question-answering service built with **Spring Boot 3** and **Spring 
 and get answers grounded in your own content — with sources.
 
 > Status: in active development. See the roadmap below.
-
+>
+## What this demonstrates
+- Production-style RAG architecture with Spring AI (retrieval, grounding, source citations)
+- Decoupled, async processing using Kafka for document ingestion
+- Vector similarity search with pgvector, including index tuning (HNSW)
+- Integration testing against real infrastructure with Testcontainers
+- End-to-end ownership: architecture, implementation, testing, and CI
+  
 ## How it works
 
 ```
