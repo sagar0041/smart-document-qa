@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: smart-document-qa
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:docqa}
+    username: ${DB_USER:docqa}
+    password: ${DB_PASSWORD:docqa}
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4o-mini
+      embedding:
+        options:
+          model: text-embedding-3-small
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        dimensions: 1536
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    consumer:
+      group-id: docqa-ingestion
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
