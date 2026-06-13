@@ -7,6 +7,10 @@ spring:
     username: ${DB_USER:docqa}
     password: ${DB_PASSWORD:docqa}
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
