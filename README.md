@@ -46,7 +46,7 @@ and get answers grounded in your own content — with sources.
 |---|---|
 | Framework | Java 17, Spring Boot 3.4, Spring AI 1.0 |
 | Vector store | PostgreSQL 16 + pgvector |
-| Messaging | Apache Kafka (KRaft) |
+| Messaging | Apache Kafka (Zookeeper-based, Confluent images) |
 | AI models | OpenAI chat + embeddings via Spring AI |
 | Testing | JUnit 5, Mockito, Testcontainers (PostgreSQL, Kafka) |
 | Build / CI | Maven, GitHub Actions, Docker Compose |
@@ -69,8 +69,9 @@ Health check: `curl localhost:8080/actuator/health`
 ## Roadmap
 
 - [x] Project skeleton: Spring Boot 3, Docker Compose (pgvector, Kafka)
-- [ ] Document upload endpoint with text extraction
-- [ ] Kafka-based async ingestion pipeline (chunking + embeddings)
+- [x] Document upload endpoint with text extraction
+- [x] Kafka producer: publish document ID on upload
+- [ ] Kafka consumer: chunking + embeddings
 - [ ] Vector similarity search over pgvector
 - [ ] RAG answer endpoint with source citations
 - [ ] Integration tests with Testcontainers

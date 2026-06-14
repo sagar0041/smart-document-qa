@@ -1,3 +1,6 @@
+# Using Zookeeper-based Kafka (Confluent images) instead of KRaft mode:
+# the apache/kafka KRaft image had startup validation issues not resolved
+# by documented config. KRaft is the longer-term direction; revisit later.
 services:
   postgres:
     image: pgvector/pgvector:pg16
