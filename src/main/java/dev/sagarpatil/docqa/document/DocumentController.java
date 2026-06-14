@@ -14,11 +14,14 @@ public class DocumentController {
 
     private final TextExtractionService textExtractionService;
     private final DocumentRepository documentRepository;
+    private final DocumentEventPublisher documentEventPublisher;
 
     public DocumentController(TextExtractionService textExtractionService,
-                               DocumentRepository documentRepository) {
+                               DocumentRepository documentRepository,
+                              DocumentEventPublisher documentEventPublisher) {
         this.textExtractionService = textExtractionService;
         this.documentRepository = documentRepository;
+        this.documentEventPublisher = documentEventPublisher;
     }
 
     @PostMapping
@@ -32,6 +35,8 @@ public class DocumentController {
 
             Document document = new Document(file.getOriginalFilename(), text, "UPLOADED");
             documentRepository.save(document);
+
+            documentEventPublisher.publishDocumentUploaded(document.getId());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                     "id", document.getId(),
