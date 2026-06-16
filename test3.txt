@@ -1,0 +1,1 @@
+Apache Kafka is a distributed event streaming platform used for building real-time data pipelines.

@@ -7,6 +7,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -31,7 +32,7 @@ public class DocumentIngestionConsumer {
 
           try {
               String text = document.getContent();
-              org.springframework.ai.document.Document aiDocs = new org.springframework.ai.document.Document(text);
+              org.springframework.ai.document.Document aiDocs = new org.springframework.ai.document.Document(text, Map.of("documentId", documentId));
               List<org.springframework.ai.document.Document> originalList = List.of(aiDocs);
               List<org.springframework.ai.document.Document> chunks = textSplitter.apply(originalList);
               vectorStore.add(chunks);
