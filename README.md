@@ -5,14 +5,14 @@ A document question-answering service built with **Spring Boot 3** and **Spring 
 and get answers grounded in your own content — with sources.
 
 > Status: in active development. See the roadmap below.
->
+
 ## What this demonstrates
 - Production-style RAG architecture with Spring AI (retrieval, grounding, source citations)
 - Decoupled, async processing using Kafka for document ingestion
 - Vector similarity search with pgvector, including index tuning (HNSW)
 - Integration testing against real infrastructure with Testcontainers
 - End-to-end ownership: architecture, implementation, testing, and CI
-  
+
 ## How it works
 
 ```
@@ -54,28 +54,59 @@ and get answers grounded in your own content — with sources.
 ## Running locally
 
 ```bash
-# 1. start infrastructure (Postgres + pgvector, Kafka)
+# 1. start infrastructure (Postgres + pgvector, Zookeeper, Kafka)
 docker compose up -d
 
-# 2. set your OpenAI key
+# 2a. with a real OpenAI key (full semantic search + RAG)
 export OPENAI_API_KEY=sk-...
-# 2b. without an OpenAI key (local dev mode - fake embeddings)
-SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run
-
-# 3. run the service
 ./mvnw spring-boot:run
+
+# 2b. without an OpenAI key (local dev mode — fake embeddings, no API cost)
+SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run
 ```
 
 Health check: `curl localhost:8080/actuator/health`
 
+## API endpoints
+
+### Upload a document
+```bash
+curl -X POST -F "file=@document.txt" localhost:8080/api/documents
+# returns: { "id": "...", "filename": "...", "status": "UPLOADED", "extractedChars": N }
+```
+
+### Search — retrieve similar chunks
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"question":"What is Kafka?"}' \
+  localhost:8080/api/search
+# returns: [{ "content": "...", "documentId": "...", "score": 0.74 }]
+```
+
+### Ask — RAG answer with source citations
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"question":"What is Kafka?"}' \
+  localhost:8080/api/ask
+# returns: { "answer": "...", "sources": [{ "content": "...", "documentId": "...", "score": 0.74 }] }
+```
+
+### Check document processing status
+```bash
+# Status flow: UPLOADED → PROCESSING → INDEXED (or FAILED)
+docker exec -it smart-document-qa-postgres-1 psql -U docqa -d docqa \
+  -c "SELECT id, filename, status FROM documents ORDER BY created_at DESC LIMIT 5;"
+```
+
 ## Roadmap
 
 - [x] Project skeleton: Spring Boot 3, Docker Compose (pgvector, Kafka)
-- [x] Document upload endpoint with text extraction
+- [x] Document upload endpoint with Apache Tika text extraction
 - [x] Kafka producer: publish document ID on upload
 - [x] Kafka consumer: chunking + embeddings + pgvector storage
 - [x] Vector similarity search over pgvector
-- [ ] RAG answer endpoint with source citations
+- [x] RAG answer endpoint with source citations
+- [x] Local dev profile: fake embedding model (no OpenAI cost)
 - [ ] Integration tests with Testcontainers
 - [ ] GitHub Actions CI (build + test on every push)
 - [ ] API documentation (OpenAPI/Swagger)
