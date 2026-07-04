@@ -1,5 +1,7 @@
 # Smart Document Q&A
 
+[![CI](https://github.com/sagar0041/smart-document-qa/actions/workflows/ci.yml/badge.svg)](https://github.com/sagar0041/smart-document-qa/actions/workflows/ci.yml)
+
 A document question-answering service built with **Spring Boot 3** and **Spring AI**, using
 **retrieval-augmented generation (RAG)**: upload documents, ask questions in natural language,
 and get answers grounded in your own content — with sources.
