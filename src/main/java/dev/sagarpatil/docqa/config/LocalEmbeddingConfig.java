@@ -1,9 +1,13 @@
 package dev.sagarpatil.docqa.config;
 
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.embedding.Embedding;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.embedding.EmbeddingRequest;
 import org.springframework.ai.embedding.EmbeddingResponse;
-import org.springframework.ai.embedding.Embedding;
+import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -47,6 +51,22 @@ public class LocalEmbeddingConfig {
                 }
                 return vector;
             }
-        };  // <-- anonymous class ends here
+        };
     }
+
+    @Bean
+    public ChatModel chatModel() {
+        return prompt -> ChatResponse.builder()
+                .generations(List.of(
+                        new org.springframework.ai.chat.model.Generation(
+                                new org.springframework.ai.chat.messages.AssistantMessage(
+                                        "This is a fake local answer. Add OpenAI credit for real responses."))))
+                .build();
+    }
+
+    @Bean
+    public ChatClient chatClient(ChatModel chatModel) {
+        return ChatClient.builder(chatModel).build();
+    }
+
 }

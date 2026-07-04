@@ -21,8 +21,6 @@ public class SearchController {
 
     public record AskRequest(String question) {}
 
-    public record SearchResult(String content, String documentId, double score) {}
-
     @Autowired
     public SearchController(VectorStore vectorStore) {
         this.vectorStore = vectorStore;
