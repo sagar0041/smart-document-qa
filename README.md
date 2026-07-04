@@ -59,6 +59,8 @@ docker compose up -d
 
 # 2. set your OpenAI key
 export OPENAI_API_KEY=sk-...
+# 2b. without an OpenAI key (local dev mode - fake embeddings)
+SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run
 
 # 3. run the service
 ./mvnw spring-boot:run
@@ -71,8 +73,8 @@ Health check: `curl localhost:8080/actuator/health`
 - [x] Project skeleton: Spring Boot 3, Docker Compose (pgvector, Kafka)
 - [x] Document upload endpoint with text extraction
 - [x] Kafka producer: publish document ID on upload
-- [ ] Kafka consumer: chunking + embeddings
-- [ ] Vector similarity search over pgvector
+- [x] Kafka consumer: chunking + embeddings + pgvector storage
+- [x] Vector similarity search over pgvector
 - [ ] RAG answer endpoint with source citations
 - [ ] Integration tests with Testcontainers
 - [ ] GitHub Actions CI (build + test on every push)
