@@ -6,7 +6,7 @@ A document question-answering service built with **Spring Boot 3** and **Spring 
 **retrieval-augmented generation (RAG)**: upload documents, ask questions in natural language,
 and get answers grounded in your own content — with sources.
 
-> Status: in active development. See the roadmap below.
+> Status: core pipeline complete. RAG answer endpoint working end-to-end with local dev profile.
 
 ## What this demonstrates
 - Production-style RAG architecture with Spring AI (retrieval, grounding, source citations)
@@ -109,9 +109,8 @@ docker exec -it smart-document-qa-postgres-1 psql -U docqa -d docqa \
 - [x] Vector similarity search over pgvector
 - [x] RAG answer endpoint with source citations
 - [x] Local dev profile: fake embedding model (no OpenAI cost)
-- [ ] Integration tests with Testcontainers
-- [ ] GitHub Actions CI (build + test on every push)
-- [ ] API documentation (OpenAPI/Swagger)
+- [x] Integration tests with Testcontainers
+- [x] GitHub Actions CI (build + test on every push)
 
 ## Why this project
 
