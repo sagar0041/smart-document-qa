@@ -25,4 +25,4 @@ jobs:
         env:
           SPRING_PROFILES_ACTIVE: local
           OPENAI_API_KEY: dummy-ci-key
-        run: ./mvnw verify -DskipTests
+        run: ./mvnw verify
