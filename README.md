@@ -17,22 +17,7 @@ and get answers grounded in your own content — with sources.
 
 ## How it works
 
-```
-                 ┌──────────────┐        ┌─────────────────┐
-  upload ──────► │  REST API    │ ─────► │  Kafka topic     │
-                 │ (Spring Boot)│        │  doc-ingestion   │
-                 └──────┬───────┘        └────────┬─────────┘
-                        │                         │ async
-  question ────────────►│                ┌────────▼─────────┐
-                        │                │ Ingestion worker  │
-                 ┌──────▼───────┐        │ chunk + embed     │
-                 │ RAG pipeline │        └────────┬─────────┘
-                 │ retrieve +   │                 │
-                 │ generate     │        ┌────────▼─────────┐
-                 └──────┬───────┘ ◄──────│ PostgreSQL        │
-                        │     similarity │ + pgvector (HNSW) │
-  answer + sources ◄────┘        search  └──────────────────┘
-```
+![Architecture](docs/architecture.svg)
 
 1. **Ingestion** — documents are uploaded via REST and published to a Kafka topic; an async
    consumer chunks the text, creates embeddings (OpenAI `text-embedding-3-small`), and stores
