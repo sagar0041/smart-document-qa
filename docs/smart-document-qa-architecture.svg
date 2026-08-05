@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 800" width="1060" height="800" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5f6368"/>
+    </marker>
+    <marker id="arrowStart" viewBox="0 0 10 10" refX="1" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 10 0 L 0 5 L 10 10 z" fill="#5f6368"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1060" height="800" fill="#ffffff"/>
+
+  <!-- ===== Title ===== -->
+  <text x="530" y="44" text-anchor="middle" font-size="25" font-weight="700" fill="#202124">Smart Document Q&amp;A — System Architecture</text>
+  <text x="530" y="70" text-anchor="middle" font-size="13" fill="#5f6368">Retrieval-Augmented Generation · Spring Boot 3 · Spring AI · Kafka · pgvector</text>
+
+  <!-- ===== Client ===== -->
+  <rect x="60" y="110" width="430" height="76" rx="10" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.6"/>
+  <text x="82" y="140" font-size="16" font-weight="700" fill="#1a73e8">REST Client</text>
+  <text x="82" y="164" font-size="12" fill="#3c4043">POST /api/documents · /api/search · /api/ask</text>
+
+  <!-- Client -> App -->
+  <line x1="275" y1="188" x2="275" y2="232" stroke="#5f6368" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="292" y="215" font-size="11.5" fill="#5f6368">HTTP · multipart / JSON</text>
+
+  <!-- ===== Why async note ===== -->
+  <rect x="620" y="110" width="380" height="120" rx="8" fill="#f8f9fa" stroke="#dadce0" stroke-width="1.4"/>
+  <text x="640" y="136" font-size="13" font-weight="700" fill="#202124">Why asynchronous ingestion?</text>
+  <text x="640" y="158" font-size="11" fill="#3c4043">Upload returns as soon as Tika extraction and the</text>
+  <text x="640" y="176" font-size="11" fill="#3c4043">database write finish. Chunking and embedding —</text>
+  <text x="640" y="194" font-size="11" fill="#3c4043">slow, network-bound work — run off the request</text>
+  <text x="640" y="212" font-size="11" fill="#3c4043">thread. Tradeoff: eventual consistency.</text>
+
+  <!-- ===== Spring Boot application ===== -->
+  <rect x="60" y="236" width="430" height="336" rx="10" fill="#e6f4ea" stroke="#188038" stroke-width="1.6"/>
+  <text x="82" y="266" font-size="16" font-weight="700" fill="#188038">Spring Boot 3.4 · Spring AI 1.0</text>
+  <text x="82" y="285" font-size="12" fill="#5f6368">localhost:8080</text>
+
+  <rect x="80" y="296" width="390" height="62" rx="6" fill="#f4faf6" stroke="#a8d5b5"/>
+  <text x="96" y="319" font-size="12.5" font-weight="600" fill="#202124">Document Upload API</text>
+  <text x="96" y="339" font-size="10.5" fill="#3c4043">Apache Tika extraction → status UPLOADED</text>
+
+  <rect x="80" y="372" width="390" height="86" rx="6" fill="#f4faf6" stroke="#a8d5b5"/>
+  <text x="96" y="393" font-size="12.5" font-weight="600" fill="#202124">Ingestion Consumer · @KafkaListener</text>
+  <text x="96" y="412" font-size="10.5" fill="#3c4043">TokenTextSplitter → text chunks</text>
+  <text x="96" y="430" font-size="10.5" fill="#3c4043">EmbeddingModel → VectorStore.add()</text>
+  <text x="96" y="448" font-size="10.5" fill="#3c4043">status: PROCESSING → INDEXED / FAILED</text>
+
+  <rect x="80" y="472" width="390" height="86" rx="6" fill="#f4faf6" stroke="#a8d5b5"/>
+  <text x="96" y="493" font-size="12.5" font-weight="600" fill="#202124">Search &amp; Ask API · RAG pipeline</text>
+  <text x="96" y="512" font-size="10.5" fill="#3c4043">similaritySearch → top-k chunks + scores</text>
+  <text x="96" y="530" font-size="10.5" fill="#3c4043">ChatClient → answer grounded in sources</text>
+  <text x="96" y="548" font-size="10.5" fill="#3c4043">graceful 503 when the model is unavailable</text>
+
+  <!-- ===== Kafka ===== -->
+  <rect x="620" y="240" width="380" height="120" rx="10" fill="#f3e8fd" stroke="#8430ce" stroke-width="1.6"/>
+  <text x="640" y="270" font-size="16" font-weight="700" fill="#8430ce">Apache Kafka</text>
+  <text x="640" y="289" font-size="12" fill="#5f6368">topic: doc-ingestion · Confluent + Zookeeper</text>
+  <text x="640" y="315" font-size="11" fill="#3c4043">• Message payload is the documentId only —</text>
+  <text x="650" y="333" font-size="11" fill="#3c4043">content stays in Postgres, avoiding size limits</text>
+
+  <!-- Upload API -> Kafka -->
+  <line x1="474" y1="320" x2="616" y2="320" stroke="#5f6368" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="545" y="309" text-anchor="middle" font-size="11" fill="#5f6368">1. publish id</text>
+
+  <!-- Kafka -> Consumer -->
+  <polyline points="616,344 545,344 545,415 476,415" fill="none" stroke="#5f6368" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="580" y="360" text-anchor="middle" font-size="11" fill="#5f6368">2. consume</text>
+
+  <!-- ===== OpenAI ===== -->
+  <rect x="620" y="400" width="380" height="175" rx="10" fill="#e0f7f5" stroke="#00897b" stroke-width="1.6"/>
+  <text x="640" y="430" font-size="16" font-weight="700" fill="#00897b">OpenAI API · via Spring AI</text>
+  <text x="640" y="458" font-size="11.5" fill="#3c4043">• text-embedding-3-small — 1536-dim vectors</text>
+  <text x="640" y="480" font-size="11.5" fill="#3c4043">• gpt-4o-mini — grounded answer generation</text>
+  <line x1="640" y1="498" x2="980" y2="498" stroke="#b2dfdb" stroke-width="1.2"/>
+  <text x="640" y="521" font-size="11" fill="#5f6368">The `local` Spring profile swaps in fake embedding</text>
+  <text x="640" y="539" font-size="11" fill="#5f6368">and chat models, so the entire pipeline runs</text>
+  <text x="640" y="557" font-size="11" fill="#5f6368">end to end offline at zero API cost.</text>
+
+  <!-- Consumer -> OpenAI -->
+  <line x1="474" y1="440" x2="616" y2="440" stroke="#5f6368" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="545" y="430" text-anchor="middle" font-size="11" fill="#5f6368">3. embed chunks</text>
+
+  <!-- Search/Ask -> OpenAI -->
+  <line x1="474" y1="515" x2="616" y2="515" stroke="#5f6368" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="545" y="505" text-anchor="middle" font-size="11" fill="#5f6368">5. generate</text>
+
+  <!-- App <-> Postgres -->
+  <line x1="275" y1="574" x2="275" y2="616" stroke="#5f6368" stroke-width="1.6"
+        marker-end="url(#arrow)" marker-start="url(#arrowStart)"/>
+  <text x="292" y="600" font-size="11.5" fill="#5f6368">4. store vectors · 6. retrieve top-k</text>
+
+  <!-- ===== PostgreSQL ===== -->
+  <rect x="60" y="620" width="940" height="160" rx="10" fill="#fef7e0" stroke="#f9ab00" stroke-width="1.6"/>
+  <text x="82" y="650" font-size="16" font-weight="700" fill="#b06000">PostgreSQL 16 + pgvector · localhost:5432</text>
+
+  <rect x="82" y="668" width="440" height="92" rx="6" fill="#ffffff" stroke="#f9ab00"/>
+  <text x="100" y="694" font-size="13" font-weight="600" fill="#202124">documents</text>
+  <text x="100" y="716" font-size="11" fill="#3c4043">id · filename · extracted content · status</text>
+  <text x="100" y="736" font-size="11" fill="#5f6368">UPLOADED → PROCESSING → INDEXED / FAILED</text>
+
+  <rect x="548" y="668" width="430" height="92" rx="6" fill="#ffffff" stroke="#f9ab00"/>
+  <text x="566" y="694" font-size="13" font-weight="600" fill="#202124">vector_store</text>
+  <text x="566" y="716" font-size="11" fill="#3c4043">chunk text · embedding vector(1536)</text>
+  <text x="566" y="736" font-size="11" fill="#5f6368">metadata { documentId } · HNSW index, cosine distance</text>
+
+</svg>
